@@ -7,143 +7,142 @@ import {
   Image,
   ScrollView,
   StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { auth } from '../../services/auth';
 import { db } from '../../services/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import layout from '../../styles/layout';
-import typography from '../../styles/typography';
+import { useRouter } from 'expo-router';
 
-export default function CaretakerRegister({ navigation }: any) {
+export default function CaretakerRegister() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleRegister = async () => {
-    console.log('🔁 Register button pressed');
-  
-    if (!email || !password || !fullName) {
-      console.log('❗ Missing fields');
-      return;
-    }
-  
+    if (!email || !password || !fullName) return;
+
     setLoading(true);
-  
     try {
-      console.log('👤 Creating user...');
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log('✅ Firebase Auth success');
-  
       const uid = userCredential.user.uid;
-      console.log('📌 User UID:', uid);
-  
-      console.log('📝 Writing user to Firestore...');
+
       await setDoc(doc(db, 'users', uid), {
         fullName,
         email,
         role: 'caretaker',
       });
-      console.log('✅ Firestore write success');
-  
+
       setEmail('');
       setPassword('');
       setFullName('');
       setLoading(false);
-  
-      console.log('🏁 Finished registration. Navigating...');
-      navigation.navigate('CaretakerLogin');
+      router.replace('/(auth)/CaretakerLogin');
     } catch (error: any) {
-      console.log('❌ Registration FAILED:', error.message);
+      console.log('Registration failed:', error.message);
       setLoading(false);
     }
   };
-  
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={layout.container}>
-        <Image
-          source={require('../../assets/images/wellnest_logo.png')}
-          style={{
-            width: 180,
-            height: 180,
-            resizeMode: 'contain',
-            marginBottom: 20,
-            marginTop: 40,
-          }}
-        />
-
-        <View style={styles.card}>
-          <Text style={[typography.heading, { color: '#fff', marginBottom: 20 }]}>
-            Register
-          </Text>
-
-          <TextInput
-            placeholder="Full Name"
-            placeholderTextColor="#000"
-            value={fullName}
-            onChangeText={setFullName}
-            style={styles.input}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={styles.container}>
+          <Image
+            source={require('../../assets/images/wellnest_logo.png')}
+            style={styles.logo}
           />
 
-          <TextInput
-            placeholder="Email Address"
-            placeholderTextColor="#000"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            style={styles.input}
-          />
+          <View style={styles.card}>
+            <TextInput
+              placeholder="Full Name"
+              placeholderTextColor="#000"
+              value={fullName}
+              onChangeText={setFullName}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Email Address"
+              placeholderTextColor="#000"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Password"
+              placeholderTextColor="#000"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              style={styles.input}
+            />
 
-          <TextInput
-            placeholder="Password"
-            placeholderTextColor="#000"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            style={styles.input}
-          />
-
-          <TouchableOpacity
-            style={[layout.button, loading && { opacity: 0.6 }]}
-            onPress={handleRegister}
-            disabled={loading}
-          >
-            <Text style={typography.button}>
-              {loading ? 'Registering...' : 'Register'}
-            </Text>
-          </TouchableOpacity>
-
-          {/* ✅ Visible Feedback Instead of Alert */}
-          {loading && (
-            <Text style={{ color: 'white', textAlign: 'center', marginTop: 10 }}>
-              Processing...
-            </Text>
-          )}
+            <TouchableOpacity
+              style={[styles.button, loading && { opacity: 0.7 }]}
+              onPress={handleRegister}
+              disabled={loading}
+            >
+              <Text style={styles.buttonText}>
+                {loading ? 'Registering...' : 'Register'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    paddingBottom: 20,
+  },
+  logo: {
+    width: 160,
+    height: 160,
+    resizeMode: 'contain',
+    marginTop: 50,
+    marginBottom: 30,
+  },
   card: {
     backgroundColor: '#3D5A80',
+    width: '100%',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    padding: 30,
-    width: '100%',
+    paddingHorizontal: 30,
+    paddingTop: 30,
+    paddingBottom: 40,
+    justifyContent: 'center',
   },
   input: {
     height: 50,
-    width: '100%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 25,
+    backgroundColor: '#fff',
+    borderRadius: 15,
     paddingHorizontal: 20,
     marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#3D5A80',
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: '#A8DADC',
+    paddingVertical: 14,
+    borderRadius: 15,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#1D3557',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
