@@ -7,8 +7,6 @@ import {
   Image,
   ScrollView,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import { auth } from '../../services/auth';
 import { db } from '../../services/firebase';
@@ -49,84 +47,87 @@ export default function CaretakerRegister() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={styles.container}>
-          <Image
-            source={require('../../assets/images/wellnest_logo.png')}
-            style={styles.logo}
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <Image
+          source={require('../../assets/images/wellnest_logo.png')}
+          style={styles.logo}
+        />
+
+        <View style={styles.card}>
+          <TextInput
+            placeholder="Full Name"
+            placeholderTextColor="#000"
+            value={fullName}
+            onChangeText={setFullName}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Email Address"
+            placeholderTextColor="#000"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Password"
+            placeholderTextColor="#000"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            style={styles.input}
           />
 
-          <View style={styles.card}>
-            <TextInput
-              placeholder="Full Name"
-              placeholderTextColor="#000"
-              value={fullName}
-              onChangeText={setFullName}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Email Address"
-              placeholderTextColor="#000"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor="#000"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              style={styles.input}
-            />
-
-            <TouchableOpacity
-              style={[styles.button, loading && { opacity: 0.7 }]}
-              onPress={handleRegister}
-              disabled={loading}
-            >
-              <Text style={styles.buttonText}>
-                {loading ? 'Registering...' : 'Register'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={[styles.button, loading && { opacity: 0.7 }]}
+            onPress={handleRegister}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? 'Registering...' : 'Register'}
+            </Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    paddingBottom: 20,
+    paddingTop: 60,
   },
   logo: {
     width: 160,
     height: 160,
     resizeMode: 'contain',
-    marginTop: 50,
-    marginBottom: 30,
+    marginBottom: 10,
   },
   card: {
     backgroundColor: '#3D5A80',
-    width: '100%',
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
-    paddingHorizontal: 30,
-    paddingTop: 30,
-    paddingBottom: 40,
+    width: '85%',
+    borderRadius: 40,
+    paddingVertical: 30,
+    paddingHorizontal: 25,
+    alignItems: 'center',
     justifyContent: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   input: {
     height: 50,
+    width: '100%',
     backgroundColor: '#fff',
     borderRadius: 15,
     paddingHorizontal: 20,
@@ -136,6 +137,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#A8DADC',
     paddingVertical: 14,
+    width: '100%',
     borderRadius: 15,
     marginTop: 10,
     alignItems: 'center',

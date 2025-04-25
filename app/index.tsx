@@ -6,12 +6,13 @@ export default function WelcomeScreen() {
   const router = useRouter();
 
   return (
-    <><View style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Let’s get started!</Text>
 
       <Image
         source={require('../assets/images/wellnest_logo.png')} // Adjust path if needed
-        style={styles.logo} />
+        style={styles.logo}
+      />
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/(auth)/CaretakerLogin')}>
         <Text style={styles.buttonText}>Caretaker</Text>
@@ -20,17 +21,9 @@ export default function WelcomeScreen() {
       <TouchableOpacity style={styles.button} onPress={() => router.push('/(auth)/ElderlyLogin')}>
         <Text style={styles.buttonText}>Elderly</Text>
       </TouchableOpacity>
-    </View><View style={{ marginTop: 20 }}>
-        <Text style={{ color: '#000' }}>
-          Don’t have an account?{' '}
-          <Text
-            style={{ color: '#3D5A80', fontWeight: 'bold' }}
-            onPress={() => router.push('/(auth)/CaretakerRegister')}
-          >
-            Register now
-          </Text>
-        </Text>
-      </View></>
+    </View>
+
+    
   );
 }
 
