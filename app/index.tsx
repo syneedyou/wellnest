@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import * as Animatable from 'react-native-animatable'; // Add this
 
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -9,8 +10,10 @@ export default function WelcomeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Let’s get started!</Text>
 
-      <Image
-        source={require('../assets/images/wellnest_logo.png')} // Adjust path if needed
+      <Animatable.Image
+        animation="fadeInDown"
+        duration={1200}
+        source={require('../assets/images/wellnest_logo.png')}
         style={styles.logo}
       />
 
@@ -22,8 +25,6 @@ export default function WelcomeScreen() {
         <Text style={styles.buttonText}>Elderly</Text>
       </TouchableOpacity>
     </View>
-
-    
   );
 }
 
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
+    paddingTop: 40,
   },
   title: {
     fontSize: 24,
@@ -42,10 +44,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    width: 160,
-    height: 160,
+    width: 260, // Bigger and cleaner
+    height: 260,
     resizeMode: 'contain',
-    marginBottom: 40,
+    marginBottom: 50,
+    opacity: 0.97,
   },
   button: {
     backgroundColor: '#3D5A80',

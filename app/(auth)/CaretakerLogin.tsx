@@ -7,6 +7,7 @@ import {
   Image,
   StyleSheet,
   Alert,
+  ScrollView,
   ActivityIndicator,
 } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -30,7 +31,7 @@ export default function CaretakerLogin() {
       await signInWithEmailAndPassword(auth, email, password);
       setLoading(false);
       Alert.alert('Login successful');
-      router.replace('/CaretakerHomepage'); // Update this to your actual caretaker home route
+      router.replace('/CaretakerHomepage');
     } catch (error: any) {
       setLoading(false);
       Alert.alert('Login failed', error.message);
@@ -38,95 +39,117 @@ export default function CaretakerLogin() {
   };
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={require('../../assets/images/wellnest_logo.png')}
-        style={styles.logo}
-      />
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <Image
+          source={require('../../assets/images/wellnest_logo.png')}
+          style={styles.logo}
+        />
 
-      <Text style={styles.title}>Hi, Caretaker!</Text>
+        <Text style={styles.heading}>Hi, Caretaker!</Text>
 
-      <TextInput
-        placeholder="Email"
-        placeholderTextColor="#000"
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        placeholder="Password"
-        placeholderTextColor="#000"
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+        <View style={styles.card}>
+          <TextInput
+            placeholder="Email"
+            placeholderTextColor="#000"
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+          <TextInput
+            placeholder="Password"
+            placeholderTextColor="#000"
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
-        <Text style={styles.buttonText}>
-          {loading ? 'Processing...' : 'Login'}
-        </Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, loading && { opacity: 0.7 }]} onPress={handleLogin} disabled={loading}>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Login</Text>
+            )}
+          </TouchableOpacity>
+        </View>
 
-      <View style={{ marginTop: 20 }}>
-  <Text style={{ color: '#000' }}>
-    Don’t have an account?{' '}
-    <Text
-      style={{ color: '#3D5A80', fontWeight: 'bold' }}
-      onPress={() => router.push('/(auth)/CaretakerRegister')}
-    >
-      Register now
-    </Text>
-  </Text>
-</View>
-    </View>
-
-    
+        <View style={{ marginTop: 20 }}>
+          <Text style={styles.footerText}>
+            Don’t have an account?{' '}
+            <Text
+              style={styles.link}
+              onPress={() => router.push('/(auth)/CaretakerRegister')}
+            >
+              Register now
+            </Text>
+          </Text>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: 'center',
-    padding: 24,
+    backgroundColor: '#fff',
+    paddingVertical: 20,
+  },
+  container: {
+    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   logo: {
-    width: 160,
-    height: 160,
+    width: 180,   // or 200 if you want bold presence
+    height: 180,
     resizeMode: 'contain',
     marginBottom: 30,
+    opacity: 0.95,
   },
-  title: {
+  
+  heading: {
     fontSize: 24,
     fontWeight: '700',
     color: '#000',
     marginBottom: 24,
   },
-  input: {
-    height: 50,
+  card: {
+    backgroundColor: '#3f5b82',
+    padding: 24,
     width: '100%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 25,
+    borderRadius: 20,
+    gap: 15,
+  },
+  input: {
+    backgroundColor: '#fff',
     paddingHorizontal: 20,
-    marginBottom: 15,
+    paddingVertical: 12,
+    borderRadius: 25,
+    fontSize: 16,
     borderWidth: 1,
     borderColor: '#3D5A80',
   },
   button: {
-    backgroundColor: '#3D5A80',
+    backgroundColor: '#a0d8db',
     paddingVertical: 14,
-    paddingHorizontal: 30,
-    borderRadius: 20,
-    marginTop: 10,
-    width: '70%',
+    borderRadius: 25,
     alignItems: 'center',
+    marginTop: 10,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: '#000',
     fontSize: 16,
     fontWeight: '600',
+  },
+  footerText: {
+    fontSize: 14,
+    color: '#000',
+  },
+  link: {
+    color: '#3D5A80',
+    fontWeight: 'bold',
   },
 });
