@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  Alert,
   ScrollView,
+  Alert,
   ActivityIndicator,
 } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../services/auth';
+import { auth, firestore } from '../../services/auth'; // ✅ Correct import
 import { useRouter } from 'expo-router';
+import { doc, getDoc } from 'firebase/firestore'; // ✅ Use doc() for fetching user role
 
 export default function CaretakerLogin() {
   const [email, setEmail] = useState('');
@@ -28,13 +29,43 @@ export default function CaretakerLogin() {
 
     try {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, email, password);
-      setLoading(false);
-      Alert.alert('Login successful');
-      router.replace('/CaretakerHomepage');
+
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // 🔥 After login, fetch role from Firestore
+      const userDocRef = doc(firestore, 'users', user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+
+        if (userData.role !== 'caretaker') {
+          setLoading(false);
+          Alert.alert('Access Denied', 'You are not registered as a Caretaker.');
+          await auth.signOut();
+          return;
+        }
+
+        setLoading(false);
+        Alert.alert('Login successful');
+        router.replace('/CaretakerHomepage'); // ✅ Go to caretaker home
+
+      } else {
+        setLoading(false);
+        Alert.alert('Login Error', 'User data not found.');
+        await auth.signOut();
+      }
+
     } catch (error: any) {
+      console.error('Login error:', error);
       setLoading(false);
-      Alert.alert('Login failed', error.message);
+
+      if (error.code === 'auth/invalid-credential') {
+        Alert.alert('Login failed', 'Incorrect email or password.');
+      } else {
+        Alert.alert('Login failed', error.message);
+      }
     }
   };
 
@@ -46,7 +77,7 @@ export default function CaretakerLogin() {
           style={styles.logo}
         />
 
-        <Text style={styles.heading}>Hi, Caretaker!</Text>
+        <Text style={styles.heading}>Welcome back, Caretaker!</Text>
 
         <View style={styles.card}>
           <TextInput
@@ -66,7 +97,11 @@ export default function CaretakerLogin() {
             secureTextEntry
           />
 
-          <TouchableOpacity style={[styles.button, loading && { opacity: 0.7 }]} onPress={handleLogin} disabled={loading}>
+          <TouchableOpacity
+            style={[styles.button, loading && { opacity: 0.7 }]}
+            onPress={handleLogin}
+            disabled={loading}
+          >
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
@@ -103,13 +138,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   logo: {
-    width: 180,   // or 200 if you want bold presence
-    height: 180,
+    width: 160,
+    height: 160,
     resizeMode: 'contain',
-    marginBottom: 30,
-    opacity: 0.95,
+    marginBottom: 20,
   },
-  
   heading: {
     fontSize: 24,
     fontWeight: '700',

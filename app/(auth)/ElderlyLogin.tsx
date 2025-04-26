@@ -11,8 +11,9 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../services/auth';
+import { auth, firestore } from '../../services/auth'; // ✅ correct import
 import { useRouter } from 'expo-router';
+import { doc, getDoc } from 'firebase/firestore'; // ✅ doc() not collection()
 
 export default function ElderlyLogin() {
   const [email, setEmail] = useState('');
@@ -28,11 +29,40 @@ export default function ElderlyLogin() {
 
     try {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, email, password);
-      setLoading(false);
-      Alert.alert('Login successful');
-      router.replace('/ElderlyHomepage');
+
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // 🧠 Debugging output
+      console.log('firestore check:', firestore);
+      console.log('firestore app name:', firestore.app.name);
+
+      // ✅ Use doc() to get user's document
+      const userDocRef = doc(firestore, 'users', user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+
+        if (userData.role !== 'elderly') {
+          setLoading(false);
+          Alert.alert('Access Denied', 'You are not registered as an Elderly user.');
+          await auth.signOut();
+          return;
+        }
+
+        setLoading(false);
+        Alert.alert('Login successful');
+        router.replace('/ElderlyHomepage');
+
+      } else {
+        setLoading(false);
+        Alert.alert('Login Error', 'User data not found.');
+        await auth.signOut();
+      }
+
     } catch (error: any) {
+      console.error('Login error:', error);
       setLoading(false);
       Alert.alert('Login failed', error.message);
     }
@@ -66,7 +96,11 @@ export default function ElderlyLogin() {
             secureTextEntry
           />
 
-          <TouchableOpacity style={[styles.button, loading && { opacity: 0.7 }]} onPress={handleLogin} disabled={loading}>
+          <TouchableOpacity
+            style={[styles.button, loading && { opacity: 0.7 }]}
+            onPress={handleLogin}
+            disabled={loading}
+          >
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
