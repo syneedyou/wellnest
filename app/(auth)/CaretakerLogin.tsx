@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, firestore } from '../../services/auth'; // ✅ Correct import
+import { auth, firestore } from '../services/auth'; // ✅ Correct import
 import { useRouter } from 'expo-router';
 import { doc, getDoc } from 'firebase/firestore'; // ✅ Use doc() for fetching user role
 

@@ -10,8 +10,8 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { auth } from '../../services/auth';
-import { db } from '../../services/firebase';
+import { auth } from '../services/auth';
+import { db } from '../services/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
