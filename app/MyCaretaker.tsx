@@ -21,7 +21,16 @@ export default function MyCaretaker() {
       ) : (
         <Text style={styles.loadingText}>Loading QR Code...</Text>
       )}
+      <View style={{ marginTop: 20 }}>
+  <Text style={{ fontSize: 18 }}>Your Elderly ID:</Text>
+  <Text selectable style={{ fontSize: 20, fontWeight: 'bold', color: '#3D5A80', marginTop: 5 }}>
+    {uid}
+  </Text>
+</View>
+
     </View>
+
+    
   );
 }
 
