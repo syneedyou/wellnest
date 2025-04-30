@@ -30,6 +30,18 @@ export default function ElderlyHomepage() {
           </View>
         </TouchableOpacity>
 
+        {/* Medication Reminder Card */}
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => router.push('/ElderlyMedicationStatus')}
+          >
+            <Text style={styles.cardTitle}>Medication Reminder</Text>
+            <View style={styles.progressBar}>
+              <View style={styles.progressFill} />
+            </View>
+          </TouchableOpacity>
+
+
         {/* Bottom Two Cards */}
         <View style={styles.row}>
           {/* Tapping this goes to MyCaretaker.tsx */}

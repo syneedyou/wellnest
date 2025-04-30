@@ -20,18 +20,22 @@ export default function CaretakerHomepage() {
         </TouchableOpacity>
 
         {/* Two small cards */}
-        <View style={styles.row}>
-          <TouchableOpacity
-            style={styles.smallCard}
-            onPress={() => router.push('/MyElderlyList')}
-          >
-            <Text style={styles.smallCardText}>My Elderly</Text>
-          </TouchableOpacity>
+    <View style={styles.row}>
+      <TouchableOpacity
+        style={styles.smallCard}
+        onPress={() => router.push('/MyElderlyList')}
+      >
+        <Text style={styles.smallCardText}>My Elderly</Text>
+      </TouchableOpacity>
 
-          <View style={styles.smallCard}>
-            <Text style={styles.smallCardText}> </Text>
-          </View>
-        </View>
+      <TouchableOpacity
+        style={styles.smallCard}
+        onPress={() => router.push('/CTMedicationReminder')}
+      >
+        <Text style={styles.smallCardText}>Medication Reminder</Text>
+      </TouchableOpacity>
+    </View>
+
 
         {/* Link Elderly Button */}
         <TouchableOpacity
