@@ -1,38 +1,110 @@
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function CaretakerHomepage() {
   const router = useRouter();
 
-  const goToReminder = () => {
-    router.push('/CTMedicationReminder');
-
-  };
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome, Caretaker!</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text style={styles.greeting}>Hi, Caretaker!</Text>
 
-      <Button title="Set Medication Reminder" onPress={goToReminder} />
+        {/* Top Alert Card */}
+        <View style={styles.card}>
+          <Text>Important Alert</Text>
+        </View>
 
-      <Button title="Link Elderly" onPress={() => router.push('/LinkElderly')} />
+        {/* Dashboard */}
+        <TouchableOpacity style={styles.card}>
+          <Text>Dashboard</Text>
+        </TouchableOpacity>
 
-    </View>
+        {/* Two small cards */}
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.smallCard}
+            onPress={() => router.push('/MyElderlyList')}
+          >
+            <Text style={styles.smallCardText}>My Elderly</Text>
+          </TouchableOpacity>
 
-    
+          <View style={styles.smallCard}>
+            <Text style={styles.smallCardText}> </Text>
+          </View>
+        </View>
+
+        {/* Link Elderly Button */}
+        <TouchableOpacity
+          style={styles.linkButton}
+          onPress={() => router.push('/LinkElderly')}
+        >
+          <Text style={styles.linkButtonText}>Link Elderly</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#D1E7F0',
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    padding: 20,
   },
-  title: {
-    fontSize: 24,
+  greeting: {
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  smallCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    width: '48%',
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  smallCardText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  linkButton: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    paddingVertical: 15,
+    alignItems: 'center',
+    marginTop: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  linkButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

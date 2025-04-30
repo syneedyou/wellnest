@@ -1,36 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import { auth } from './services/auth';
-
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { auth } from './services/auth'; // Adjust path if needed
+import * as Clipboard from 'expo-clipboard';
 
 export default function MyCaretaker() {
-  const uid = auth.currentUser?.uid; // Get Elderly's UID from Firebase Authentication
+  const uid = auth.currentUser?.uid;
+
+  const copyToClipboard = async () => {
+    if (uid) {
+      await Clipboard.setStringAsync(uid);
+      Alert.alert('Copied!', 'Elderly ID copied to clipboard.');
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Share this QR code with your Caretaker!</Text>
+      <Text style={styles.title}>Your Elderly ID</Text>
 
-      {uid ? (
-        <View style={styles.qrContainer}>
-          <QRCode
-            value={uid}
-            size={220}
-          />
-        </View>
-      ) : (
-        <Text style={styles.loadingText}>Loading QR Code...</Text>
-      )}
-      <View style={{ marginTop: 20 }}>
-  <Text style={{ fontSize: 18 }}>Your Elderly ID:</Text>
-  <Text selectable style={{ fontSize: 20, fontWeight: 'bold', color: '#3D5A80', marginTop: 5 }}>
-    {uid}
-  </Text>
-</View>
+      <Text selectable style={styles.uidText}>
+        {uid}
+      </Text>
 
+      <TouchableOpacity onPress={copyToClipboard} style={styles.copyButton}>
+        <Text style={styles.buttonText}>📋 Copy ID</Text>
+      </TouchableOpacity>
     </View>
-
-    
   );
 }
 
@@ -39,7 +33,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#D1E7F0', // match your WellNest theme
+    backgroundColor: '#D1E7F0',
     padding: 20,
   },
   title: {
@@ -48,19 +42,21 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  qrContainer: {
-    backgroundColor: '#FFFFFF',
-    padding: 20,
-    borderRadius: 20,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+  uidText: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#3D5A80',
+    marginBottom: 20,
+    textAlign: 'center',
   },
-  loadingText: {
-    fontSize: 18,
-    color: 'gray',
-    marginTop: 20,
+  copyButton: {
+    backgroundColor: '#3D5A80',
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });

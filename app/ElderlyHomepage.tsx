@@ -22,7 +22,7 @@ export default function ElderlyHomepage() {
         {/* Activity Log Card */}
         <TouchableOpacity 
           style={styles.card}
-          onPress={() => router.push('/ElderlyActivity')} // Navigate to Activity Log page
+          onPress={() => router.push('/ElderlyActivity')}
         >
           <Text style={styles.cardTitle}>Activity Log</Text>
           <View style={styles.progressBar}>
@@ -32,9 +32,14 @@ export default function ElderlyHomepage() {
 
         {/* Bottom Two Cards */}
         <View style={styles.row}>
-          <View style={styles.smallCard}>
+          {/* Tapping this goes to MyCaretaker.tsx */}
+          <TouchableOpacity 
+            style={styles.smallCard}
+            onPress={() => router.push('/MyCaretaker')}
+          >
             <Text style={styles.smallCardText}>My Caretaker</Text>
-          </View>
+          </TouchableOpacity>
+
           <View style={styles.smallCard}>
             <Text style={styles.smallCardText}>Widget</Text>
           </View>
@@ -48,7 +53,7 @@ export default function ElderlyHomepage() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#D1E7F0', // soft light blue background
+    backgroundColor: '#D1E7F0',
   },
   container: {
     flex: 1,
@@ -64,8 +69,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
-    elevation: 5, // Android shadow
-    shadowColor: '#000', // iOS shadow
+    elevation: 5,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   progressFill: {
-    width: '50%', // Example 50% progress
+    width: '50%',
     height: '100%',
     backgroundColor: '#6EC1E4',
   },
